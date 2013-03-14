@@ -24,7 +24,11 @@ module Esendex
       raise ArgumentError.new(":to required") unless args[:to]
       raise ArgumentError.new(":body required") unless args[:body]
 
-      send_messages([Message.new(args[:to], args[:body], args[:from])])
+      messages = [Message.new(args[:to], args[:body], args[:from])]
+      batch_submission = MessageBatchSubmission.new(@reference, messages)
+      response = api_connection.post "/v1.0/messagedispatcher", batch_submission.to_s
+      doc = Nokogiri::XML(response.body)
+      doc.at_xpath('//api:messageheader', 'api' => Esendex::API_NAMESPACE)['id']
     end
     
     def send_messages(messages)

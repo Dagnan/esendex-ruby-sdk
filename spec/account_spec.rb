@@ -62,10 +62,11 @@ describe Account do
 
   describe "#send_message" do
     let(:batch_id) { random_string }
+    let(:id) { random_string }
     let(:send_response_xml) {
       "<?xml version=\"1.0\" encoding=\"utf-8\"?> 
       <messageheaders batchid=\"#{batch_id}\" xmlns=\"http://api.esendex.com/ns/\">
-        <messageheader\ uri=\"http://api.esendex.com/v1.0/MessageHeaders/00000000-0000-0000-0000-000000000000\" id=\"00000000-0000-0000-0000-000000000000\" />
+        <messageheader\ uri=\"http://api.esendex.com/v1.0/MessageHeaders/00000000-0000-0000-0000-000000000000\" id=\"#{id}\" />
       </messageheaders>"
     }
 
@@ -79,8 +80,8 @@ describe Account do
       api_connection.should_receive(:post).with("/v1.0/messagedispatcher", anything)
       subject
     end
-    it "should return the batch_id in the result" do
-      subject.should eq(batch_id)
+    it "should return the id in the result" do
+      subject.should eq(id)
     end
   end  
 end
